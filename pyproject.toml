@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "seiright"
+version = "0.0.1"
+description = "LLM to check financial institution compliance"
+authors = ["Mohit Sharma"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pandas = "^2.2.1"
+numpy = "^1.26.4"
+scipy = "^1.12.0"
+matplotlib = "^3.8.3"
+
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.0.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,52 @@
+name: "Deploy model to cloud"
+on: 
+  push:
+    branches:
+      - main
+      - "*"
+  workflow_dispatch:
+jobs:
+  tests: 
+    name: Run pytest
+    runs-on: ubuntu-latest 
+    steps: 
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+      - name: Install poetry
+        uses: snok/install-poetry@v1
+        with:
+          virtualenvs-create: false
+          virtualenvs-in-project: false
+          installer-parallel: true
+      - name: Run pytest
+        run: |
+          poetry install --with tests
+          pytest -s --verbose
+  prod:
+    name: Deploy model to cloud
+    runs-on: ubuntu-latest
+    if: github.branch == 'main'
+    needs: tests
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+      - name: Build Docker Image
+        run: |
+          buildNumber=${{ github.run_number }}
+          docker build -t ecrRepositoryUrl/seiright-exercise:latest -t ecrRepositoryUrl/seiright-exercise:$buildNumber -f Dockerfile
+      - name: Push Docker image to ecr
+        run: |
+          docker push ecrRepositoryUrl/seiright-exercise:latest
+          docker push ecrRepositoryUrl/seiright-exercise:$buildNumber
+      - name: Deploy application to kubernetes cluster
+        run: kubectl apply -f pod.yml

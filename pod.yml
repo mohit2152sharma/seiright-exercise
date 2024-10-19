@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ml
+spec:
+  containers:
+  - name: ml
+    image: awsEcrRepoLink/seiright-exercise:latest
+    ports:
+    - containerPort: 80
