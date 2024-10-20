@@ -1,5 +1,8 @@
 # seiright-exercise
 
+> [!NOTE]
+> The work on prompt is not yet finished. I am still working on improving the prompt. I am planning to include the compliance policy within the system prompt of the llm. Apart from that, rest of the setup is done. The project is written in such a way that once the prompt is finalised, I just need to update the `seiright/core/prompts/system.txt` file and the service will start using the new system prompt.
+
 ## WebServer
 
 For developing the api endpoint, I have selected the web framework **_FastAPI_**.
@@ -70,4 +73,3 @@ In the webserver, I have implemented some basic security, a user needs to be aut
 - I have also included the `terraform` code, which was used to create resources for this project in `aws`. This includes
   - ECR Repository for this project with lifecycle policy attached to it.
   - AWS EKS Cluster for application deployment
-
