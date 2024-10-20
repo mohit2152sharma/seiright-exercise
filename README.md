@@ -73,3 +73,4 @@ In the webserver, I have implemented some basic security, a user needs to be aut
 - I have also included the `terraform` code, which was used to create resources for this project in `aws`. This includes
   - ECR Repository for this project with lifecycle policy attached to it.
   - AWS EKS Cluster for application deployment
+  - Secrets manager to handle secret keys of LLMs
