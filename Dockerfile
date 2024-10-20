@@ -1,5 +1,5 @@
 
-FROM python:3.11
+FROM python:3.12
 
 
 COPY ./pyproject.toml /pyproject.toml 
@@ -14,4 +14,4 @@ RUN poetry install
 
 COPY ./ /
 
-CMD ["uvicorn", "prediction_service.main:app", "--host", "0.0.0.0", "--port", "80"]
+CMD ["uvicorn", "seiright.app.main:app", "--host", "0.0.0.0", "--port", "80"]

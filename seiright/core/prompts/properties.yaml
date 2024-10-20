@@ -1,0 +1,9 @@
+- type: boolean
+  name: is_compliant
+  description: "If the given company is compliant, return True otherwise False"
+- type: string
+  name: reasoning
+  description: "This parameter describes the reasoning behind the given answer"
+- type: number
+  name: confidence_score
+  description: "This parameter describes the confidence score of the given answer. The value must be between 0 and 1. 1 being the highest and 0 being the lowest confidence score. The higher the score, the more confident the model is that the answer is correct."

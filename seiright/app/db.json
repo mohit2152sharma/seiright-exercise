@@ -1,0 +1,14 @@
+{
+  "johndoe": {
+    "username": "johndoe",
+    "display_name": "John Doe",
+    "email": "johndoe@example.com",
+    "hashed_password": "$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW"
+  },
+  "monte": {
+    "username": "monte",
+    "display_name": "Mohit Sharma",
+    "email": "mohitsharma@gmail.com",
+    "hashed_password": "$2b$12$MtPstvtZGBy4wvPRn3IDkehfjW8ML7.XtX.CnpzO79ronNzTskjRi"
+  }
+}

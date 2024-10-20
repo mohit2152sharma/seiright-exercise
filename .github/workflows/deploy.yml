@@ -12,19 +12,30 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Set up Python 3.11
+      - name: Set up Python 3.12
         uses: actions/setup-python@v4
+        id: setup-python
         with:
-          python-version: 3.11
+          python-version: 3.12
       - name: Install poetry
         uses: snok/install-poetry@v1
         with:
-          virtualenvs-create: false
-          virtualenvs-in-project: false
+          virtualenvs-create: true
+          virtualenvs-in-project: true
           installer-parallel: true
+          virtualenvs-path: .venv
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v4
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+      - name: Install dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry install --no-interaction --no-root --with test
       - name: Run pytest
         run: |
-          poetry install --with tests
+          source .venv/bin/activate
           pytest -s --verbose
   prod:
     name: Deploy model to cloud
@@ -36,17 +47,30 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: main
-      - name: Set up Python 3.11
+      - name: Set up Python 3.12
         uses: actions/setup-python@v4
         with:
-          python-version: 3.11
+          python-version: 3.12
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: ECR Login
+        uses: aws-actions/amazon-ecr-login@v2
+        id: login-ecr
+
       - name: Build Docker Image
-        run: |
-          buildNumber=${{ github.run_number }}
-          docker build -t ecrRepositoryUrl/seiright-exercise:latest -t ecrRepositoryUrl/seiright-exercise:$buildNumber -f Dockerfile
-      - name: Push Docker image to ecr
-        run: |
-          docker push ecrRepositoryUrl/seiright-exercise:latest
-          docker push ecrRepositoryUrl/seiright-exercise:$buildNumber
-      - name: Deploy application to kubernetes cluster
-        run: kubectl apply -f pod.yml
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          # TODO: update the version no. on every push
+          tags: |
+            ${{ steps.login-ecr.outputs.registry}}/seiright:v0.0.1
+            ${{steps.login-ecr.outputs.registry}}/seiright:latest
+
+      # - name: Deploy application to kubernetes cluster
+      #   run: kubectl apply -f pod.yml
