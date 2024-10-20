@@ -19,7 +19,10 @@ terraform {
     dynamodb_table = "tf-state-dynamodb-table-seiright"
     encrypt        = true
   }
+}
 
-
+module "eks" {
+  source       = "./eks"
+  cluster_name = "eks-cluster-seiright"
 }
 

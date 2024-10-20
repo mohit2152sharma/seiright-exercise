@@ -12,6 +12,6 @@ ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
 RUN curl -sSL https://install.python-poetry.org | python3 -
 RUN poetry install
 
-COPY ./ /
+COPY ./seiright /seiright
 
-CMD ["uvicorn", "seiright.app.main:app", "--host", "0.0.0.0", "--port", "80"]
+CMD ["SECRET_KEY=$(openssl rand -hex 32)", "ALGORITHM=HS256", "uvicorn", "seiright.app.main:app", "--host", "0.0.0.0", "--port", "80"]
