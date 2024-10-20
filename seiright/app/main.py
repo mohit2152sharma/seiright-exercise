@@ -1,4 +1,5 @@
 import logging
+import os
 from datetime import timedelta
 from typing import Annotated, Dict
 
@@ -8,6 +9,7 @@ from jose import JWTError, jwt
 
 from ..core._types import LLMProvider
 from ..core.assemble import ComplianceChecker
+from ..utils.utils import secret
 from .api_models import CheckComplianceResponse, Token, TokenData, User, get_user
 from .security import (
     access_token_expire_time,
@@ -22,6 +24,12 @@ from .utils import read_db
 app = FastAPI()
 logging.basicConfig(level=logging.INFO)
 compliance_checker = ComplianceChecker(llm_provider=LLMProvider.OPENAI, model="gpt4o")
+openai_api_key = secret(secret_string="openai-api-key")
+
+# NOTE: Need to create an enviornment variable because LLM expects this key
+# otherwise it throws an error
+# TODO: Think of better way to pass around api key
+os.environ["OPENAI_API_KEY"] = openai_api_key
 
 
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme())]) -> User:
