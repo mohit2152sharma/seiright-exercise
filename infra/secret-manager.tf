@@ -5,13 +5,13 @@ locals {
   ]
 }
 
-resource "aws_secretsmanager_secret" "secrets" {
-  count       = length(local.secrets)
-  name        = local.secrets[count.index].name
-  description = local.secrets[count.index].description
-  tags = {
-    application = "seiright"
-  }
-}
+# resource "aws_secretsmanager_secret" "secrets" {
+#   count       = length(local.secrets)
+#   name        = local.secrets[count.index].name
+#   description = local.secrets[count.index].description
+#   tags = {
+#     application = "seiright"
+#   }
+# }
 
 
